@@ -1,0 +1,54 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CarritoServiceApplication<carritoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.levelupgamer.carritoService.CarritoServiceApplication",
+            "projectName": "carritoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ContactoServiceApplication<contactoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.levelupgamer.contactoService.ContactoServiceApplication",
+            "projectName": "contactoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PedidoServiceApplication<pedidoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.levelupgamer.pedidoService.PedidoServiceApplication",
+            "projectName": "pedidoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProductoServiceApplication<productoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.levelupgamer.productoService.ProductoServiceApplication",
+            "projectName": "productoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-UsuarioServiceApplication<usuarioService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.levelupgamer.usuarioService.UsuarioServiceApplication",
+            "projectName": "usuarioService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
