@@ -1,3 +1,4 @@
+// src/main/java/cl/levelupgamer/usuarioService/service/UsuarioService.java
 package cl.levelupgamer.usuarioService.service;
 
 import cl.levelupgamer.usuarioService.model.Usuario;
@@ -15,45 +16,58 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
+    // Inyección de dependencia del repositorio
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // CREATE
+    /**
+     * CREATE - Registrar usuario en Firestore.
+     * Devuelve el ID del documento creado.
+     */
     public String registrarUsuario(Usuario usuario)
             throws ExecutionException, InterruptedException {
 
-        // 🔥 FECHA EN ESPAÑOL - CHILE
+        // Fecha de creación en español (Chile)
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern(
-                "d 'de' MMMM 'de' yyyy, HH:mm:ss",
+                "dd 'de' MMMM 'de' yyyy HH:mm",
                 new Locale("es", "CL")
         );
 
         usuario.setCreadoEn(ahora.format(formato));
 
-        return usuarioRepository.crearUsuario(usuario);
+        return usuarioRepository.registrarUsuario(usuario);
     }
 
-    // READ
+    /**
+     * READ - Obtener un usuario por ID (documento Firestore).
+     */
     public Usuario obtenerUsuarioPorId(String id)
             throws ExecutionException, InterruptedException {
+
         return usuarioRepository.obtenerUsuarioPorId(id);
     }
 
+    /**
+     * READ - Listar todos los usuarios.
+     */
     public List<Usuario> listarUsuarios()
             throws ExecutionException, InterruptedException {
+
         return usuarioRepository.listarUsuarios();
     }
 
-    // UPDATE
+    /**
+     * UPDATE - Actualizar un usuario existente.
+     */
     public String actualizarUsuario(String id, Usuario usuario)
             throws ExecutionException, InterruptedException {
 
-        // Opcional: actualizar fecha de modificación en español
+        // Opcional: actualizar la fecha de modificación
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern(
-                "d 'de' MMMM 'de' yyyy, HH:mm:ss",
+                "dd 'de' MMMM 'de' yyyy HH:mm",
                 new Locale("es", "CL")
         );
 
@@ -62,9 +76,12 @@ public class UsuarioService {
         return usuarioRepository.actualizarUsuario(id, usuario);
     }
 
-    // DELETE
+    /**
+     * DELETE - Eliminar un usuario por ID.
+     */
     public String eliminarUsuario(String id)
             throws ExecutionException, InterruptedException {
+
         return usuarioRepository.eliminarUsuario(id);
     }
 }

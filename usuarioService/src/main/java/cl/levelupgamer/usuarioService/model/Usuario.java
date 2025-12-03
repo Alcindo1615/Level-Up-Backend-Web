@@ -1,3 +1,4 @@
+// src/main/java/cl/levelupgamer/usuarioService/model/Usuario.java
 package cl.levelupgamer.usuarioService.model;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Usuario {
 
-    // Se guardará el id del documento de Firestore
+    // ID del documento en Firestore
     private String id;
 
     private String rut;

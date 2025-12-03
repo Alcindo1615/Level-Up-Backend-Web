@@ -1,3 +1,4 @@
+// src/main/java/cl/levelupgamer/usuarioService/controller/UsuarioController.java
 package cl.levelupgamer.usuarioService.controller;
 
 import cl.levelupgamer.usuarioService.model.Usuario;
@@ -16,30 +17,30 @@ import java.util.concurrent.ExecutionException;
  */
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "http://localhost:3000") // React
+@CrossOrigin(origins = "http://localhost:3000") // Permitir peticiones desde React
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    // Inyección del servicio mediante constructor
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    // CREATE
-    @Operation(summary = "Registrar usuario", description = "Crea un nuevo usuario en la colección 'usuarios' de Firestore")
+    // CREATE: registrar usuario
+    @Operation(summary = "Registrar usuario", description = "Crea un nuevo usuario en Firestore")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente"),
-            @ApiResponse(responseCode = "500", description = "Error interno al registrar el usuario")
+            @ApiResponse(responseCode = "200", description = "Usuario creado correctamente")
     })
     @PostMapping
-    public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario)
+    public ResponseEntity<String> registrarUsuario(@RequestBody Usuario usuario)
             throws ExecutionException, InterruptedException {
 
         String id = usuarioService.registrarUsuario(usuario);
         return ResponseEntity.ok(id);
     }
 
-    // READ: obtener uno
+    // READ: obtener uno por ID
     @Operation(summary = "Obtener usuario por ID", description = "Obtiene un usuario por su ID de documento")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
@@ -57,7 +58,7 @@ public class UsuarioController {
     }
 
     // READ: listar todos
-    @Operation(summary = "Listar usuarios", description = "Lista todos los usuarios registrados")
+    @Operation(summary = "Listar usuarios", description = "Obtiene todos los usuarios registrados")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     })

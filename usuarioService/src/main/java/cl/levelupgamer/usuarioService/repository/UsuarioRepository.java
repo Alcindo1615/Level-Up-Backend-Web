@@ -11,101 +11,99 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Repositorio para acceder a la colección "usuarios" en Firestore.
+ * Repositorio que maneja directamente las operaciones CRUD contra Firestore.
+ * La colección usada es "usuarios".
  */
 @Repository
 public class UsuarioRepository {
 
     private static final String COLLECTION_NAME = "usuarios";
 
-    private Firestore getDb() {
-        return FirestoreClient.getFirestore();
-    }
-
     /**
-     * CREA un usuario en Firestore y devuelve el id del documento.
-     * Además, guarda ese id dentro del campo "id" del propio documento.
+     * CREATE – Registrar usuario.
+     * Firestore genera un ID automático y lo devolvemos.
      */
-    public String crearUsuario(Usuario usuario) throws ExecutionException, InterruptedException {
-        Firestore db = getDb();
+    public String registrarUsuario(Usuario usuario) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
 
-        // Creamos un documento vacío para obtener el ID
+        // Creamos un nuevo documento con ID automático
         DocumentReference docRef = db.collection(COLLECTION_NAME).document();
 
-        // Asignamos el id del documento al campo id del usuario
-        usuario.setId(docRef.getId());
+        // Guardamos el usuario en Firestore
+        ApiFuture<WriteResult> future = docRef.set(usuario);
+        future.get(); // esperamos a que termine
 
-        // Guardamos el usuario
-        ApiFuture<WriteResult> writeResult = docRef.set(usuario);
-        writeResult.get(); // esperamos a que termine (por si quieres manejar errores)
-
-        return docRef.getId();
+        return docRef.getId(); // devolvemos el ID generado
     }
 
     /**
-     * OBTIENE un usuario por su id de documento.
+     * READ – Obtener usuario por ID (documento Firestore).
      */
     public Usuario obtenerUsuarioPorId(String id) throws ExecutionException, InterruptedException {
-        Firestore db = getDb();
+        Firestore db = FirestoreClient.getFirestore();
 
         DocumentReference docRef = db.collection(COLLECTION_NAME).document(id);
         ApiFuture<DocumentSnapshot> future = docRef.get();
+
         DocumentSnapshot document = future.get();
 
         if (!document.exists()) {
-            return null;
+            return null; // si no existe, retornamos null
         }
 
-        return document.toObject(Usuario.class);
+        Usuario usuario = document.toObject(Usuario.class);
+        usuario.setId(document.getId()); // aseguramos que el ID quede seteado
+
+        return usuario;
     }
 
     /**
-     * LISTA todos los usuarios de la colección.
+     * READ – Listar todos los usuarios.
      */
     public List<Usuario> listarUsuarios() throws ExecutionException, InterruptedException {
-        Firestore db = getDb();
+        Firestore db = FirestoreClient.getFirestore();
 
         ApiFuture<QuerySnapshot> future = db.collection(COLLECTION_NAME).get();
-        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        List<QueryDocumentSnapshot> documentos = future.get().getDocuments();
 
-        List<Usuario> usuarios = new ArrayList<>();
-        for (QueryDocumentSnapshot doc : documents) {
-            Usuario u = doc.toObject(Usuario.class);
-            usuarios.add(u);
+        List<Usuario> lista = new ArrayList<>();
+
+        for (QueryDocumentSnapshot doc : documentos) {
+            Usuario usuario = doc.toObject(Usuario.class);
+            usuario.setId(doc.getId()); // asignamos el id
+            lista.add(usuario);
         }
 
-        return usuarios;
+        return lista;
     }
 
     /**
-     * ACTUALIZA un usuario existente por id.
-     * Se asegura de que el campo usuario.id coincida con el id del documento.
+     * UPDATE – Actualizar usuario por ID.
      */
-    public String actualizarUsuario(String id, Usuario usuario)
-            throws ExecutionException, InterruptedException {
-
-        Firestore db = getDb();
-
-        // Aseguramos consistencia
-        usuario.setId(id);
+    public String actualizarUsuario(String id, Usuario usuario) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
 
         DocumentReference docRef = db.collection(COLLECTION_NAME).document(id);
-        ApiFuture<WriteResult> writeResult = docRef.set(usuario, SetOptions.merge());
-        writeResult.get();
 
-        return id;
+        // Reemplazamos el documento completo con los nuevos datos
+        ApiFuture<WriteResult> writeResult = docRef.set(usuario);
+
+        writeResult.get(); // esperamos a que termine
+
+        return "Usuario actualizado con éxito";
     }
 
     /**
-     * ELIMINA un usuario por id.
+     * DELETE – Eliminar usuario por ID.
      */
     public String eliminarUsuario(String id) throws ExecutionException, InterruptedException {
-        Firestore db = getDb();
+        Firestore db = FirestoreClient.getFirestore();
 
-        DocumentReference docRef = db.collection(COLLECTION_NAME).document(id);
-        ApiFuture<WriteResult> writeResult = docRef.delete();
-        writeResult.get();
+        ApiFuture<WriteResult> writeResult =
+                db.collection(COLLECTION_NAME).document(id).delete();
 
-        return id;
+        writeResult.get(); // esperamos a que termine
+
+        return "Usuario eliminado con éxito";
     }
 }
